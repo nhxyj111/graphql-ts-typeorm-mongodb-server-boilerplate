@@ -7,6 +7,7 @@ import { User } from '../../entity/User';
 import { formatYupError } from '../../utils/formatYupError';
 import { duplicateEmail, emailNotLongEnough, invalidEmail, passwordNotLongEnough } from './errorMessages';
 import { createConfirmEmailLink } from '../../utils/createConfirmEmailLink';
+// import { sendEmail } from '../../utils/sendEmail';
 
 const schema = yup.object().shape({
   email: yup.string().min(3, emailNotLongEnough).max(255).email(invalidEmail),
@@ -40,7 +41,11 @@ export const resolvers: ResolverMap = {
       })
       await user.save()
 
-      await createConfirmEmailLink(url, user.id.toString(), redis)
+      if (process.env.NODE_ENV !== 'test') {
+        const link = await createConfirmEmailLink(url, user.id.toString(), redis)
+        console.log(link)
+        // await sendEmail(email, link)
+      }
 
       return null
     }
