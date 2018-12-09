@@ -1,37 +1,87 @@
 import { request } from 'graphql-request'
 
 import { User } from '../../entity/User';
-import { startServer } from '../../startServer';
-
-// function sum(a: number, b: number) {
-//   return a + b
-// }
-
-// test("adds 1 + 2 tp equal 3", () => {
-//   expect(sum(1, 2)).toBe(3)
-// })
-
-let getHost = () => ''
-
-beforeAll(async () => {
-  await startServer()
-  getHost = () => `http://localhost:8888`
-})
+import { duplicateEmail, emailNotLongEnough, invalidEmail, passwordNotLongEnough } from './errorMessages';
+import { createTypeormConn } from '../../utils/createTypeormConn';
 
 const email = 'ddddddd@ddd.com'
 const password = '123456'
-const mutation = `
+const mutation = (e: string, p: string) => `
   mutation {
-    register(email: "${email}", password: "${password}")
+    register(email: "${e}", password: "${p}") {
+      path
+      message
+    }
   }
 `
 
-test("Register user", async () => {
-  const response = await request(getHost(), mutation)
-  expect(response).toEqual({ register: true })
-  const users = await User.find({ where: { email } })
-  expect(users).toHaveLength(1)
-  const user = users[0]
-  expect(user.email).toEqual(email)
-  expect(user.password).not.toEqual(password)
+beforeAll(async () => {
+  await createTypeormConn()
+})
+
+describe("Register user", async () => {
+  it("register a user", async () => {
+    const response = await request(process.env.TEST_HOST as string, mutation(email, password))
+    expect(response).toEqual({ register: null })
+    const users = await User.find({ where: { email } })
+    expect(users).toHaveLength(1)
+    const user = users[0]
+    expect(user.email).toEqual(email)
+    expect(user.password).not.toEqual(password)
+  })
+
+  it("test for duplicate emails", async () => {
+    const response2: any = await request(process.env.TEST_HOST as string, mutation(email, password))
+    expect(response2.register).toHaveLength(1)
+    expect(response2.register[0]).toEqual({
+      path: 'email',
+      message: duplicateEmail
+    })
+  })
+
+  it("catch bad email", async () => {
+    const response3: any = await request(process.env.TEST_HOST as string, mutation("b", password))
+    expect(response3).toEqual({
+      register: [
+        {
+          path: 'email',
+          message: emailNotLongEnough
+        }, {
+          path: 'email',
+          message: invalidEmail
+        }
+      ]
+    })
+  })
+
+  it("catch bad password", async () => {
+    const response4: any = await request(process.env.TEST_HOST as string, mutation(email, "b"))
+    expect(response4).toEqual({
+      register: [
+        {
+          path: 'password',
+          message: passwordNotLongEnough
+        }
+      ]
+    })
+  })
+
+  it("catch bad password and bad email", async () => {
+    const response5: any = await request(process.env.TEST_HOST as string, mutation("b", "b"))
+    expect(response5).toEqual({
+      register: [
+        {
+          path: 'email',
+          message: emailNotLongEnough
+        }, {
+          path: 'email',
+          message: invalidEmail
+        },{
+          path: 'password',
+          message: passwordNotLongEnough
+        }
+      ]
+    })
+  })
+
 })
