@@ -1,0 +1,49 @@
+[
+  {
+    "name": "development",
+    "type": "mongodb",
+    "host": "127.0.0.1",
+    "port": 27017,
+    "database": "ts-graphql",
+    "synchronize": true,
+    "logging": true,
+    "entities": [
+      "src/entity/**/*.ts"
+    ],
+    "migrations": [
+      "src/migration/**/*.ts"
+    ],
+    "subscribers": [
+      "src/subscriber/**/*.ts"
+    ],
+    "cli": {
+      "entitiesDir": "src/entity",
+      "migrationsDir": "src/migration",
+      "subscribersDir": "src/subscriber"
+    }
+  },
+  {
+    "name": "test",
+    "type": "mongodb",
+    "host": "127.0.0.1",
+    "port": 27017,
+    "database": "ts-graphql-test",
+    "synchronize": true,
+    "logging": false,
+    "dropSchema": true,
+    "entities": [
+      "src/entity/**/*.ts"
+    ],
+    "migrations": [
+      "src/migration/**/*.ts"
+    ],
+    "subscribers": [
+      "src/subscriber/**/*.ts"
+    ],
+    "cli": {
+      "entitiesDir": "src/entity",
+      "migrationsDir": "src/migration",
+      "subscribersDir": "src/subscriber"
+    }
+  }
+]
