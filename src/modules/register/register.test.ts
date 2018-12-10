@@ -3,6 +3,7 @@ import { request } from 'graphql-request'
 import { User } from '../../entity/User';
 import { duplicateEmail, emailNotLongEnough, invalidEmail, passwordNotLongEnough } from './errorMessages';
 import { createTypeormConn } from '../../utils/createTypeormConn';
+import { Connection } from 'typeorm';
 
 const email = 'ddddddd@ddd.com'
 const password = '123456'
@@ -15,8 +16,14 @@ const mutation = (e: string, p: string) => `
   }
 `
 
+let conn: Connection
+
 beforeAll(async () => {
-  await createTypeormConn()
+  conn = await createTypeormConn()
+})
+
+afterAll(async () => {
+  conn.close()
 })
 
 describe("Register user", async () => {

@@ -4,6 +4,8 @@ import * as bcrypt from 'bcryptjs'
 import { ResolverMap } from "../../types/graphql-utils";
 import { User } from "../../entity/User";
 import { invalidLogin, confirmEmailError } from "./errorMessages";
+import { userSessionIdPrefix } from '../../constants';
+// import { redisSessionPrefix } from '../../constants';
 
 // import { sendEmail } from '../../utils/sendEmail';
 
@@ -21,7 +23,7 @@ export const resolvers: ResolverMap = {
     login: async (
       _,
       {email, password}: GQL.ILoginOnMutationArguments,
-      { session }
+      { session, redis, req }
     ) => {
       const user = await User.findOne({ where: { email } })
       if (!user) {
@@ -41,7 +43,10 @@ export const resolvers: ResolverMap = {
       }
 
       session.userId = user.id.toString()
-
+      if (req.sessionID) {
+        await redis.lpush(`${userSessionIdPrefix}${user.id.toString()}`, req.sessionID)
+      }
+      // redis.get(`${redisSessionPrefix}${req.sessionID}`)
       return null
     }
   }

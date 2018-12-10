@@ -1,5 +1,5 @@
 /// <reference path="../../types/schema.d.ts" />
-import * as bcrypt from 'bcryptjs'
+// import * as bcrypt from 'bcryptjs'
 import * as yup from 'yup'
 
 import { ResolverMap } from "../../types/graphql-utils";
@@ -33,10 +33,10 @@ export const resolvers: ResolverMap = {
           message: duplicateEmail
         }]
       }
-      const hashedPassword = await bcrypt.hash(password, 10)
+      // const hashedPassword = await bcrypt.hash(password, 10)
       const user = User.create({
         email,
-        password: hashedPassword,
+        password,
         confirmed: false
       })
       await user.save()

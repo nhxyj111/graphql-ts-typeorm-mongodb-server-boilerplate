@@ -1,3 +1,5 @@
+import "reflect-metadata";
+import "dotenv/config"
 import { GraphQLServer } from 'graphql-yoga'
 import * as session from 'express-session'
 import * as connectRedis from 'connect-redis'
@@ -6,6 +8,7 @@ import { createTypeormConn } from "./utils/createTypeormConn";
 import { redis } from './redis'
 import { confirmEmail } from './routes/confirmEmail';
 import { genSchema } from './utils/genSchema';
+import { redisSessionPrefix } from "./constants";
 
 const SESSION_SECRET = 'my-secret-001'
 const RedisStore = connectRedis(session)
@@ -17,14 +20,16 @@ export const startServer = async () => {
     context: ({ request }) => ({
       redis,
       url: request.protocol + '://' + request.get('host'),
-      session: request.session
+      session: request.session,
+      req: request
     })
   })
 
   server.express.use(
     session({
       store: new RedisStore({
-        client: redis as any
+        client: redis as any,
+        prefix: redisSessionPrefix
       }),
       name: 'qid',
       secret: SESSION_SECRET,
@@ -40,7 +45,10 @@ export const startServer = async () => {
 
   const cors = {
     credentials: true,
-    origin: 'http://localhost:3000'
+    origin:
+      process.env.NODE_ENV === 'test'
+        ? "*"
+        : process.env.FRONTEND_HOST as string
   }
 
   server.express.get('/confirm/:id', confirmEmail)
