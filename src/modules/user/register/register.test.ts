@@ -1,9 +1,9 @@
 import { request } from 'graphql-request'
 
-import { User } from '../../entity/User';
+import { User } from '../../../entity/User';
 import { duplicateEmail, emailNotLongEnough, invalidEmail, passwordNotLongEnough } from './errorMessages';
 import { Connection } from 'typeorm';
-import { createTestConn } from '../../testUtils/createTestConn';
+import { createTestConn } from '../../../testUtils/createTestConn';
 
 const email = 'ddddddd@ddd.com'
 const password = '123456'

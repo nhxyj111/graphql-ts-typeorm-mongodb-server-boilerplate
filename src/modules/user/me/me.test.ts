@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Connection } from 'typeorm';
-import { User } from '../../entity/User';
-import { createTestConn } from '../../testUtils/createTestConn';
+import { User } from '../../../entity/User';
+import { createTestConn } from '../../../testUtils/createTestConn';
 
 const email = 'bo5b0@bob.com'
 const password = '123456'

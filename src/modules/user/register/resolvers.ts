@@ -1,13 +1,13 @@
-/// <reference path="../../types/schema.d.ts" />
+/// <reference path="../../../types/schema.d.ts" />
 // import * as bcrypt from 'bcryptjs'
 import * as yup from 'yup'
 
-import { ResolverMap } from "../../types/graphql-utils";
-import { User } from '../../entity/User';
-import { formatYupError } from '../../utils/formatYupError';
+import { ResolverMap } from "../../../types/graphql-utils";
+import { User } from '../../../entity/User';
+import { formatYupError } from '../../../utils/formatYupError';
 import { duplicateEmail, emailNotLongEnough, invalidEmail } from './errorMessages';
-import { createConfirmEmailLink } from '../../utils/createConfirmEmailLink';
-import { registerPasswordValidation } from '../../yupSchemas';
+import { createConfirmEmailLink } from '../../../utils/createConfirmEmailLink';
+import { registerPasswordValidation } from '../../../yupSchemas';
 // import { sendEmail } from '../../utils/sendEmail';
 
 const schema = yup.object().shape({
@@ -16,9 +16,6 @@ const schema = yup.object().shape({
 })
 
 export const resolvers: ResolverMap = {
-  Query: {
-    bye: () => 'Bye'
-  },
   Mutation: {
     register: async (_, args: GQL.IRegisterOnMutationArguments, { redis, url }) => {
       try {

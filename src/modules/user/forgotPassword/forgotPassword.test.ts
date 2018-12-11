@@ -1,13 +1,13 @@
 import { Connection } from 'typeorm';
 import * as Redis from 'ioredis'
-import { TestClient } from '../../utils/TestClient'
-import { createForgotPasswordLink } from '../../utils/createForgotPasswordLink';
-import { User } from '../../entity/User';
-import { forgotPasswordLockAccount } from '../../utils/forgotPasswordLockAccount';
+import { TestClient } from '../../../utils/TestClient'
+import { createForgotPasswordLink } from '../../../utils/createForgotPasswordLink';
+import { User } from '../../../entity/User';
+import { forgotPasswordLockAccount } from '../../../utils/forgotPasswordLockAccount';
 import { forgotPasswordLockedError } from '../login/errorMessages';
 import { passwordNotLongEnough } from '../register/errorMessages';
 import { expiredKeyError } from './errorMessages';
-import { createTestConn } from '../../testUtils/createTestConn';
+import { createTestConn } from '../../../testUtils/createTestConn';
 
 let conn: Connection
 const redis = new Redis()

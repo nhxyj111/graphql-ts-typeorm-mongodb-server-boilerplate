@@ -1,5 +1,5 @@
-/// <reference path="../../types/schema.d.ts" />
-import { ResolverMap } from "../../types/graphql-utils";
+/// <reference path="../../../types/schema.d.ts" />
+import { ResolverMap } from "../../../types/graphql-utils";
 
 export const resolvers: ResolverMap = {
   Query: {

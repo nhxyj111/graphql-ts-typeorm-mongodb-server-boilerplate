@@ -1,7 +1,7 @@
 import { request } from 'graphql-request'
 import { invalidLogin, confirmEmailError } from './errorMessages';
-import { User } from '../../entity/User';
-import { createTestConn } from '../../testUtils/createTestConn';
+import { User } from '../../../entity/User';
+import { createTestConn } from '../../../testUtils/createTestConn';
 
 const email = 'ddddd6dd@ddd.com'
 const password = '123456'

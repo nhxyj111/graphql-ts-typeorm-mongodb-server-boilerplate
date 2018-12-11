@@ -1,10 +1,10 @@
-/// <reference path="../../types/schema.d.ts" />
+/// <reference path="../../../types/schema.d.ts" />
 import * as bcrypt from 'bcryptjs'
 
-import { ResolverMap } from "../../types/graphql-utils";
-import { User } from "../../entity/User";
+import { ResolverMap } from "../../../types/graphql-utils";
+import { User } from "../../../entity/User";
 import { invalidLogin, confirmEmailError, forgotPasswordLockedError } from "./errorMessages";
-import { userSessionIdPrefix } from '../../constants';
+import { userSessionIdPrefix } from '../../../constants';
 // import { redisSessionPrefix } from '../../constants';
 
 // import { sendEmail } from '../../utils/sendEmail';
@@ -16,9 +16,6 @@ const errorResponse = [{
 
 
 export const resolvers: ResolverMap = {
-  Query: {
-    bye2: () => 'Bye'
-  },
   Mutation: {
     login: async (
       _,

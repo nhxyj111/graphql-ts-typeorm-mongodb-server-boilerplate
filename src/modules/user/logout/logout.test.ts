@@ -3,7 +3,7 @@
 // import { User } from '../../entity/User';
 import axios from 'axios';
 import { loginAndQueryMeTest } from '../me/me.test';
-import { TestClient } from '../../utils/TestClient'
+import { TestClient } from '../../../utils/TestClient'
 // const email = 'bob0@bob.com'
 // const password = '123456'
 // let conn: Connection
