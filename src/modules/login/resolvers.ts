@@ -3,7 +3,7 @@ import * as bcrypt from 'bcryptjs'
 
 import { ResolverMap } from "../../types/graphql-utils";
 import { User } from "../../entity/User";
-import { invalidLogin, confirmEmailError } from "./errorMessages";
+import { invalidLogin, confirmEmailError, forgotPasswordLockedError } from "./errorMessages";
 import { userSessionIdPrefix } from '../../constants';
 // import { redisSessionPrefix } from '../../constants';
 
@@ -34,6 +34,13 @@ export const resolvers: ResolverMap = {
         return [{
           path: 'email',
           message: confirmEmailError
+        }]
+      }
+
+      if (user.forgotPasswordLocked) {
+        return [{
+          path: 'email',
+          message: forgotPasswordLockedError
         }]
       }
 

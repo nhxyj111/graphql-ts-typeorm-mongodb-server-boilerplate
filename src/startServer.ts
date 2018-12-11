@@ -1,14 +1,18 @@
+/// <reference path="./types/rate-limit-redis.d.ts" />
 import "reflect-metadata";
 import "dotenv/config"
 import { GraphQLServer } from 'graphql-yoga'
 import * as session from 'express-session'
 import * as connectRedis from 'connect-redis'
+import * as RateLimit from 'express-rate-limit'
+import * as RateLimitRedisStore from 'rate-limit-redis'
 
 import { createTypeormConn } from "./utils/createTypeormConn";
 import { redis } from './redis'
 import { confirmEmail } from './routes/confirmEmail';
 import { genSchema } from './utils/genSchema';
 import { redisSessionPrefix } from "./constants";
+import { createTestConn } from "./testUtils/createTestConn";
 
 const SESSION_SECRET = 'my-secret-001'
 const RedisStore = connectRedis(session)
@@ -24,6 +28,17 @@ export const startServer = async () => {
       req: request
     })
   })
+
+  server.express.use(
+    new RateLimit({
+      store: new RateLimitRedisStore({
+        client: redis
+      }),
+      windowMs: 15 * 60 * 1000,
+      max: 100,
+      delayMs: 0
+    })
+  )
 
   server.express.use(
     session({
@@ -53,7 +68,12 @@ export const startServer = async () => {
 
   server.express.get('/confirm/:id', confirmEmail)
 
-  await createTypeormConn()
+  if (process.env.NODE_ENV === 'test') {
+    await createTestConn(true)
+  } else {
+    await createTypeormConn()
+  }
+
   const port = process.env.NODE_ENV === 'test' ? 8888 : 4000
   const app = await server.start({ cors, port })
   console.log(`Server is running on localhost:${port}`)

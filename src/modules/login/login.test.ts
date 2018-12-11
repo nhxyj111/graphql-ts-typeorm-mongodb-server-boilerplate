@@ -1,9 +1,9 @@
 import { request } from 'graphql-request'
 import { invalidLogin, confirmEmailError } from './errorMessages';
 import { User } from '../../entity/User';
-import { createTypeormConn } from '../../utils/createTypeormConn';
+import { createTestConn } from '../../testUtils/createTestConn';
 
-const email = 'ddddddd@ddd.com'
+const email = 'ddddd6dd@ddd.com'
 const password = '123456'
 
 const registerMutation = (e: string, p: string) => `
@@ -24,7 +24,7 @@ const loginMutation = (e: string, p: string) => `
 `
 
 beforeAll(async () => {
-  await createTypeormConn()
+  await createTestConn()
 })
 
 const loginExpectError = async (e: string, p: string, errMsg: string) => {
